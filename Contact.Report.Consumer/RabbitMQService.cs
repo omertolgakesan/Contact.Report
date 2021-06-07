@@ -28,21 +28,15 @@ namespace Contact.Report.Common.Services
                     Password = _rabbitMQConfiguration.Password
                 };
 
-                // Otomatik bağlantı kurtarmayı etkinleştirmek için,
                 factory.AutomaticRecoveryEnabled = true;
-                // Her 10 sn de bir tekrar bağlantı toparlanmaya çalışır 
                 factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(10);
-                // sunucudan bağlantısı kesildikten sonra kuyruktaki mesaj tüketimini sürdürmez 
-                // (TopologyRecoveryEnabled = false   olarak tanımlandığı için)
                 factory.TopologyRecoveryEnabled = false;
 
                 return factory.CreateConnection();
             }
             catch (BrokerUnreachableException)
             {
-                // loglama işlemi yapabiliriz
                 Thread.Sleep(5000);
-                // farklı business ta yapılabilir, ancak biz tekrar bağlantı (connection) kurmayı deneyeceğiz
                 return GetConnection();
             }
         }
