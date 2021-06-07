@@ -1,6 +1,7 @@
 ﻿using Contact.Report.Common;
 using Contact.Report.Common.Contract;
 using Contact.Report.Common.Contracts;
+using Contact.Report.Common.Enum;
 using Contact.Report.Common.Models;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -67,8 +68,9 @@ namespace Contact.Report.Consumer
             {
                 _semaphore.Wait();
                 var request = _objectConvertFormat.JsonToObject<ContactReportProducerRequestModel>(Encoding.UTF8.GetString(ea.Body));
-                var contactIdList = _mongoProvider.GetContactIdListByLocation(request, Common.Enum.MongoCollectionType.Information);
-                var contactList = _mongoProvider.GetContactListListByUuid(contactIdList, Common.Enum.MongoCollectionType.Contact);
+                var contactIdList = _mongoProvider.GetContactIdListByLocation(request, MongoCollectionType.Information);
+                var contactList = _mongoProvider.GetContactListListByUuid(contactIdList, MongoCollectionType.Contact);
+
                 ContactReportDto resultData = new ContactReportDto
                 {
                     Location = request.Location,
@@ -77,7 +79,8 @@ namespace Contact.Report.Consumer
                         Firm = x.Firm,
                         Lastname = x.Lastname,
                         Name = x.Name,
-                        UUID = x.UUID
+                        UUID = x.UUID,
+                        Informations = GetInformationList(x.UUID)
                     }).ToList()
                 };
 
@@ -103,6 +106,12 @@ namespace Contact.Report.Consumer
             {
                 throw new Exception(ex.InnerException.Message.ToString());
             }
+        }
+
+        private List<ContactInformationDto> GetInformationList(string uuid)
+        {
+            var informationlist = _mongoProvider.GetContactInformationList(uuid, MongoCollectionType.Information);
+            return informationlist.Select(x => new ContactInformationDto { ContactInformationType = x.ContactInformationType, InformationDescription = x.InformationDescription }).ToList();
         }
 
         public void Stop()

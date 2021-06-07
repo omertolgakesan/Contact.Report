@@ -12,5 +12,6 @@ namespace Contact.Report.Common.Models
         public string Name { get; set; }
         public string Lastname { get; set; }
         public string Firm { get; set; }
+        public List<ContactInformationDto> Informations { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace Contact.Report.Common.Contracts
     {
         List<string> GetContactIdListByLocation(ContactReportProducerRequestModel request, MongoCollectionType mongoCollectionType);
         List<ContactEntityModel> GetContactListListByUuid(List<string> contactIdList, MongoCollectionType mongoCollectionType);
+        List<InformationEntityModel> GetContactInformationList(string uuid, MongoCollectionType ınformation);
     }
 }

@@ -49,5 +49,10 @@ namespace Contact.Report.Data.Mongo
             return collection.AsQueryable().Where(x => contactInformations.Contains(x.UUID)).ToList();
         }
 
+        public List<InformationEntityModel> GetContactInformationList(string uuid, MongoCollectionType collectionType)
+        {
+            var collection = MongoDatabase.GetCollection<InformationEntityModel>(collectionType.ToString("g"));
+            return collection.Find(x => x.UUID == uuid).ToList();
+        }
     }
 }
